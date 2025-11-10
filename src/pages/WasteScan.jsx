@@ -20,24 +20,32 @@ export default function WasteScan() {
   // ---------------------------
   // LOAD MODEL
   // ---------------------------
-  useEffect(() => {
-    async function loadModel() {
-      try {
-        const loadedModel = await tmImage.load(
-          MODEL_URL + "model.json",
-          MODEL_URL + "metadata.json"
-        );
+  const startCamera = async () => {
+  if (!model) return alert("Model not ready yet.");
 
-        setModel(loadedModel);
-        setLoading(false);
-      } catch (err) {
-        console.error("Model load failed:", err);
-        alert("Model load failed");
+  try {
+    // Force rear camera on mobile
+    const constraints = {
+      video: {
+        facingMode: { ideal: "environment" }  // ← BACK CAMERA
       }
-    }
+    };
 
-    loadModel();
-  }, []);
+    const webcam = new tmImage.Webcam(350, 350, false); // no flip
+    webcamRef.current = webcam;
+
+    await webcam.setup(constraints);  // Use custom constraints
+    await webcam.play();
+
+    videoRef.current = webcam.webcam;
+
+    setCameraOn(true);
+    loop();
+  } catch (err) {
+    alert("Camera access failed. Please allow permissions.");
+    console.error(err);
+  }
+};
 
   // ---------------------------
   // START CAMERA
