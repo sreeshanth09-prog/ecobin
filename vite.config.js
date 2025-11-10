@@ -4,20 +4,22 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
 
-  // GitHub Pages base URL
-  base: "/ecobin/",
+  base: "/ecobin/",   // keep for GitHub Pages
 
   server: {
-    host: true,       // allow external access (required for Render)
-    port: 5173        // Vite default port
+    host: true,
+    port: 5173,
+    allowedHosts: [
+      "ecobin-8q2h.onrender.com",   // your Render domain
+    ],
   },
 
   preview: {
-    host: "0.0.0.0",  // Render requires public host
-    port: 10000        // Must match render start command
+    host: "0.0.0.0",
+    port: 10000,
   },
 
   build: {
     chunkSizeWarningLimit: 2000,
-  }
+  },
 });
