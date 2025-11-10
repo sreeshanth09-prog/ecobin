@@ -1,106 +1,146 @@
-/* ============================
-   EcoBin - AI SCAN PAGE (NO ERRORS)
-=============================== */
-
+/* ==== PAGE WRAPPER ==== */
 .scan-page {
-  padding: 40px 10%;
+  width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
+  padding: 40px 0;
 }
 
+/* ==== MAIN CARD ==== */
 .scan-card {
-  width: 100%;
-  max-width: 520px;
-  padding: 28px;
-  border-radius: 20px;
+  width: 95%;
+  max-width: 480px;
+  padding: 26px;
+  border-radius: 22px;
+  position: relative;
 
+  /* Glassmorphism (safe blur – wrapped in pseudo-element) */
   background: rgba(255, 255, 255, 0.55);
-
-  /* FIXED ORDER */
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-
-  box-shadow: var(--shadow);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
 }
+
+.scan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  z-index: -1;
+}
+
+/* ==== TITLE ==== */
 .scan-title {
   text-align: center;
-  color: var(--green);
-  font-size: 1.9rem;
+  font-size: 1.7rem;
+  margin-bottom: 20px;
+  color: #2f8f4e;
+}
+
+/* ==== CAMERA SELECT DROPDOWN ==== */
+.camera-select {
   margin-bottom: 20px;
 }
 
-.loading-text {
-  text-align: center;
-  font-size: 1rem;
-  color: var(--text-muted);
+.camera-select label {
+  font-weight: 600;
+  color: #2f2f2f;
 }
 
-/* CAMERA VIEW */
-.camera-box {
-  background: rgba(255,255,255,0.45);
-  border-radius: 16px;
-  padding: 20px;
-
-  /* FIXED ORDER */
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-
-  box-shadow: var(--shadow);
-  text-align: center;
-}
-
-.scan-view {
+.camera-select select {
   width: 100%;
-  height: auto;
-  border-radius: 14px;
-  box-shadow: var(--shadow);
+  margin-top: 6px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 1rem;
 }
 
+/* ==== CAMERA BOX ==== */
+.camera-box {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Square camera preview */
+.scan-view {
+  width: 340px;
+  height: 340px;
+  border-radius: 18px;
+  border: 2px solid #2f8f4e22;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+}
+
+/* ==== BUTTONS ==== */
 .start-btn,
 .stop-btn {
-  padding: 14px 20px;
+  width: 100%;
+  padding: 12px;
   border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  font-weight: 600;
-  color: white;
-  background: linear-gradient(90deg, var(--green), var(--dark-green));
-  margin-top: 10px;
+  transition: 0.2s ease;
 }
 
-/* LEVELS */
+.start-btn {
+  background: linear-gradient(90deg, #31a36c, #2c8f5b);
+  color: #fff;
+}
+
+.start-btn:hover {
+  opacity: 0.9;
+}
+
+.stop-btn {
+  background: #d9534f;
+  color: #fff;
+}
+
+.stop-btn:hover {
+  background: #c03d39;
+}
+
+/* ==== LEVEL BAR ==== */
 .levels-box {
   margin-top: 25px;
 }
 
 .level-row {
-  display: grid;
-  grid-template-columns: 100px 1fr 55px;
+  display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .level-label {
+  width: 90px;
   font-weight: 600;
-  color: var(--green);
 }
 
 .level-bar {
-  background: #e8e8e8;
+  flex: 1;
   height: 10px;
+  background: #e1e1e1;
   border-radius: 10px;
   overflow: hidden;
 }
 
 .level-fill {
-  background: var(--green);
   height: 100%;
+  background: #2fa35c;
   border-radius: 10px;
-  transition: width 0.4s ease;
+  transition: width 0.25s ease;
 }
 
 .level-num {
-  font-weight: 600;
+  width: 40px;
   text-align: right;
 }
