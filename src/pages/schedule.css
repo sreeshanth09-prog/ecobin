@@ -1,0 +1,297 @@
+/* ======================================================
+   EcoBin — Schedule Page Styles (FINAL STABLE VERSION)
+   ✔ No backdrop-filter errors
+   ✔ Full glass UI using safe ::before trick
+====================================================== */
+
+/* ------------------ GLOBAL ------------------ */
+
+.page {
+  padding: 50px 10%;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 25px;
+  color: var(--dark-green);
+}
+
+.section-subtitle {
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--dark-green);
+}
+
+.schedule-page {
+  animation: fadeIn 0.6s ease;
+}
+
+/* ------------------ GLASS CARD SAFE VERSION ------------------ */
+
+.card {
+  position: relative;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* automatic blur using pseudo-element (NO ERRORS) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  -webkit-backdrop-filter: blur(8px);
+backdrop-filter: blur(8px);
+
+  background: rgba(255, 255, 255, 0.30);
+}
+
+/* ------------------ GRID ------------------ */
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+}
+
+.schedule-grid.bottom {
+  margin-top: 28px;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 992px) {
+  .schedule-grid,
+  .schedule-grid.bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------ FORM ------------------ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-control {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  transition: 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--green);
+  background: #f4fff4;
+}
+
+[data-theme="dark"] .form-control {
+  background: #1c241e;
+  border-color: #444;
+  color: var(--light-text);
+}
+
+.input-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.row-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+.row-grid.end {
+  grid-template-columns: auto auto;
+  justify-content: end;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .row-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------ BUTTONS ------------------ */
+
+.btn-green {
+  background: linear-gradient(90deg, var(--green), var(--dark-green));
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-green:hover {
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid #aaa;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ------------------ MAP ------------------ */
+
+.map {
+  width: 100%;
+  height: 360px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 600px) {
+  .map {
+    height: 300px;
+  }
+}
+
+/* ------------------ TIMELINE LIST ------------------ */
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.timeline-card {
+  position: relative;
+  padding: 16px 20px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.45);
+  transition: 0.25s ease;
+  box-shadow: var(--shadow);
+}
+
+/* Safe blur */
+.timeline-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  -webkit-backdrop-filter: blur(8px);
+backdrop-filter: blur(8px);
+
+  background: rgba(255, 255, 255, 0.30);
+}
+
+.timeline-card:hover {
+  transform: translateY(-2px);
+}
+
+.timeline-card.faded {
+  opacity: 0.85;
+}
+
+[data-theme="dark"] .timeline-card {
+  background: rgba(25, 35, 25, 0.45);
+}
+
+/* Timeline text */
+
+.timeline-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ------------------ PILLS ------------------ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .pill {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--light-text);
+}
+
+/* ------------------ DELETE BUTTON ------------------ */
+
+.delete-btn {
+  background: #e74c3c;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.delete-btn:hover {
+  transform: scale(1.12);
+  background: #c0392b;
+}
+
+/* ------------------ EMPTY ------------------ */
+
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  padding: 8px 0;
+}
+
+/* ------------------ ANIMATIONS ------------------ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

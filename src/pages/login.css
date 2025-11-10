@@ -1,0 +1,163 @@
+/* ============================================
+   EcoBin Login UI 4.0 — Ultra-Premium Edition
+   100% Fixed Box — No Overflow Ever
+============================================ */
+
+/* Fullscreen background */
+.login-bg-4 {
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #eafff1, #fafffc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Parallax floating leaves */
+.leaf4 {
+  position: absolute;
+  font-size: 48px;
+  color: #2ecc71;
+  opacity: 0.18;
+  animation: drift4 8s infinite ease-in-out;
+}
+
+.leaf4-1 { top: 10%; left: 12%; animation-delay: 0s; }
+.leaf4-2 { top: 70%; left: 8%; animation-delay: 1.6s; }
+.leaf4-3 { top: 35%; right: 10%; animation-delay: 0.8s; }
+
+@keyframes drift4 {
+  0%   { transform: translateY(0px) rotate(0deg); }
+  50%  { transform: translateY(-25px) rotate(12deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Login Box Wrapper */
+.login-box-4 {
+  width: 100%;
+  max-width: 380px;       /* FIXED BOX — prevents overflow */
+  padding: 38px 32px;
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+ 
+
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeUp4 0.55s ease;
+}
+
+@keyframes fadeUp4 {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Title */
+.login-title-4 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+.login-sub-4 {
+  color: #666;
+  margin-bottom: 24px;
+}
+
+/* INPUTS */
+.input-4 {
+  position: relative;
+  margin: 16px 0;
+}
+
+.input-4 input {
+  width: 100%;
+  padding: 14px 46px;  /* Enough padding for icons */
+  border-radius: 14px;
+  border: 1px solid #dcdcdc;
+  background: white;
+  font-size: 1rem;
+  transition: 0.25s ease;
+  box-sizing: border-box;   /* FIX: Prevent overflow */
+}
+
+.input-4 input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 10px rgba(39, 174, 96, 0.3);
+  outline: none;
+}
+
+/* Input Icons */
+.icon-4 {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--green);
+}
+
+/* Eye Icon */
+.eye-4 {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #777;
+}
+
+.eye-4:hover {
+  color: var(--green);
+}
+
+/* Error Message */
+.error-4 {
+  margin-top: -6px;
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* Button */
+.btn-login-4 {
+  margin-top: 10px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(90deg, var(--green), var(--dark-green));
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-login-4:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(39, 174, 96, 0.28);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .login-bg-4 {
+  background: linear-gradient(135deg, #121212, #1b1b1b);
+}
+
+[data-theme="dark"] .login-box-4 {
+  background: rgba(30, 30, 30, 0.6);
+  color: #eee;
+}
+
+[data-theme="dark"] .input-4 input {
+  background: #252525;
+  color: white;
+  border-color: #555;
+}

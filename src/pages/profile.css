@@ -1,0 +1,62 @@
+/* ==========================
+   ECOBIN PROFILE PAGE 1.0
+========================== */
+
+.profile-page {
+  min-height: 100vh;
+  padding-top: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--light-bg);
+}
+
+.profile-card {
+  width: 360px;
+  padding: 30px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.6);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.profile-icon {
+  font-size: 110px;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+
+.profile-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: var(--dark-green);
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #e74c3c;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}

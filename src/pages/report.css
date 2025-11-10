@@ -1,0 +1,94 @@
+.report-page {
+  animation: fadeIn .6s ease;
+}
+
+/* Layout */
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+/* Stat Cards */
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+}
+
+.stat-icon {
+  font-size: 1.8rem;
+  color: var(--green);
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+/* Type Summary */
+.type-card {
+  margin-bottom: 28px;
+}
+
+.type-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.type-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Recent List */
+.list-card {
+  padding-bottom: 20px;
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.timeline-card {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.5);
+  box-shadow: var(--shadow);
+}
+
+.item-title {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: rgba(0,0,0,0.08);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 10px 0;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

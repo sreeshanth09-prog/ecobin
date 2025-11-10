@@ -1,0 +1,104 @@
+/* =============================
+        CLEAN FIXED NAVBAR
+============================= */
+
+.nav-root {
+  width: 100%;
+  height: 65px;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #ffffffcc;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  z-index: 999;
+}
+
+/* LOGO */
+.nav-logo {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #2e8b57;
+  text-decoration: none;
+}
+
+/* CENTER MENU */
+.nav-center {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #333;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+.nav-active {
+  background: #f5f6f5;
+  color: white;
+}
+
+/* RIGHT ICONS */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.theme-btn,
+.profile-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: rgba(0,0,0,0.08);
+  color: #333;
+  font-size: 1.2rem;
+
+  cursor: pointer;
+}
+
+.profile-btn {
+  text-decoration: none;
+}
+
+/* MOBILE — Shrink menu but NO SIDEBAR */
+@media (max-width: 700px) {
+  .nav-center {
+    gap: 8px;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+
+  .nav-logo {
+    font-size: 1.4rem;
+  }
+}
