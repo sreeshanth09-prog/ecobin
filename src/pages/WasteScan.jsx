@@ -46,62 +46,71 @@ export default function WasteScan() {
   const startCamera = async () => {
   if (!model) return alert("Model not ready yet.");
 
-  try {
-    // Force rear camera
-    const constraints = {
-      audio: false,
-      video: {
-        facingMode: { exact: "environment" }   // HARD FORCE REAR CAMERA
-      }
-    };
+  // Detect mobile device
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+  // Camera constraints
+  const constraints = {
+    audio: false,
+    video: isMobile
+      ? { facingMode: { ideal: "environment" } } // Mobile → Rear
+      : { facingMode: "user" }                   // Desktop → Front
+  };
+
+  try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     const webcam = new tmImage.Webcam(350, 350, false);
     webcamRef.current = webcam;
 
-    await webcam.setup({ facingMode: "environment" });
+    // Setup webcam with same rule
+    await webcam.setup({
+      facingMode: isMobile ? "environment" : "user"
+    });
     await webcam.play();
 
     videoRef.current = webcam.webcam;
     setCameraOn(true);
-
     loop();
+
   } catch (err) {
-    console.warn("Rear camera failed → switching to fallback.", err);
+    console.warn("Primary camera load failed:", err);
 
-    // --- FALLBACK: If rear camera fails, show list of cameras ---
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cams = devices.filter((d) => d.kind === "videoinput");
+    // Fallback for mobile
+    if (isMobile) {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cams = devices.filter((d) => d.kind === "videoinput");
 
-      // Pick the 2nd camera (usually rear)
-      const rearCam = cams[1];
+        // Pick rear camera (usually index 1)
+        const rearCam = cams[1];
 
-      if (!rearCam) {
-        alert("Rear camera not available on this device.");
-        return;
+        if (!rearCam) {
+          alert("Rear camera not available.");
+          return;
+        }
+
+        const fallbackConstraints = {
+          video: { deviceId: { exact: rearCam.deviceId } }
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+
+        const webcam = new tmImage.Webcam(350, 350, false);
+        webcamRef.current = webcam;
+
+        await webcam.setup({ deviceId: rearCam.deviceId });
+        await webcam.play();
+
+        videoRef.current = webcam.webcam;
+        setCameraOn(true);
+        loop();
+      } catch (fallbackErr) {
+        console.error("Fallback failed:", fallbackErr);
+        alert("Unable to access rear camera.");
       }
-
-      const fallbackConstraints = {
-        video: { deviceId: { exact: rearCam.deviceId } }
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
-
-      const webcam = new tmImage.Webcam(350, 350, false);
-      webcamRef.current = webcam;
-
-      await webcam.setup({ deviceId: rearCam.deviceId });
-      await webcam.play();
-
-      videoRef.current = webcam.webcam;
-      setCameraOn(true);
-      loop();
-
-    } catch (fallbackErr) {
-      console.error("Fallback camera failed:", fallbackErr);
-      alert("Unable to access rear camera on this device.");
+    } else {
+      alert("Camera access failed on desktop.");
     }
   }
 };
