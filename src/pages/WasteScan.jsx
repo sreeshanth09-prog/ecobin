@@ -20,21 +20,41 @@ export default function WasteScan() {
   // ---------------------------
   // LOAD MODEL
   // ---------------------------
+  useEffect(() => {
+    async function loadModel() {
+      try {
+        const loadedModel = await tmImage.load(
+          MODEL_URL + "model.json",
+          MODEL_URL + "metadata.json"
+        );
+
+        setModel(loadedModel);
+        setLoading(false);
+      } catch (err) {
+        console.error("Model load failed:", err);
+        alert("Model load failed");
+      }
+    }
+
+    loadModel();
+  }, []);
+
+
+  // ---------------------------
+  // START CAMERA
+  // ---------------------------
   const startCamera = async () => {
   if (!model) return alert("Model not ready yet.");
 
   try {
-    // Force rear camera on mobile
     const constraints = {
-      video: {
-        facingMode: { ideal: "environment" }  // ← BACK CAMERA
-      }
+      video: { facingMode: { ideal: "environment" } }
     };
 
-    const webcam = new tmImage.Webcam(350, 350, false); // no flip
+    const webcam = new tmImage.Webcam(350, 350, false); 
     webcamRef.current = webcam;
 
-    await webcam.setup(constraints);  // Use custom constraints
+    await webcam.setup(constraints);
     await webcam.play();
 
     videoRef.current = webcam.webcam;
@@ -46,24 +66,6 @@ export default function WasteScan() {
     console.error(err);
   }
 };
-
-  // ---------------------------
-  // START CAMERA
-  // ---------------------------
-  const startCamera = async () => {
-    if (!model) return alert("Model not ready yet.");
-
-    const webcam = new tmImage.Webcam(350, 350, true);
-    webcamRef.current = webcam;
-
-    await webcam.setup();
-    await webcam.play();
-
-    videoRef.current = webcam.webcam;
-
-    setCameraOn(true);
-    loop();
-  };
 
   // ---------------------------
   // STOP CAMERA
