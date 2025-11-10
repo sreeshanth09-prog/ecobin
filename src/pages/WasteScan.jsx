@@ -46,72 +46,72 @@ export default function WasteScan() {
   const startCamera = async () => {
   if (!model) return alert("Model not ready yet.");
 
-  // Detect mobile device
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  // Camera constraints
-  const constraints = {
-    audio: false,
-    video: isMobile
-      ? { facingMode: { ideal: "environment" } } // Mobile → Rear
-      : { facingMode: "user" }                   // Desktop → Front
-  };
-
   try {
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    if (isMobile) {
+      // 🔍 Step 1: Get list of cameras
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter((d) => d.kind === "videoinput");
 
-    const webcam = new tmImage.Webcam(350, 350, false);
-    webcamRef.current = webcam;
+      console.log("Video devices:", videoDevices);
 
-    // Setup webcam with same rule
-    await webcam.setup({
-      facingMode: isMobile ? "environment" : "user"
-    });
-    await webcam.play();
+      // 🔍 Step 2: find back camera
+      let backCam = videoDevices.find((d) =>
+        d.label.toLowerCase().includes("back")
+      );
 
-    videoRef.current = webcam.webcam;
-    setCameraOn(true);
-    loop();
+      // fallback: assume index 1 is rear camera
+      if (!backCam && videoDevices.length > 1) {
+        backCam = videoDevices[1];
+      }
+
+      // still no camera?
+      if (!backCam) {
+        alert("Rear camera not found. Using default camera.");
+      }
+
+      // 🔍 Step 3: Use the exact deviceId
+      const constraints = {
+        video: backCam
+          ? { deviceId: { exact: backCam.deviceId } }
+          : { facingMode: { ideal: "environment" } }
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+      const webcam = new tmImage.Webcam(350, 350, false);
+      webcamRef.current = webcam;
+
+      await webcam.setup(constraints.video);
+      await webcam.play();
+
+      videoRef.current = webcam.webcam;
+      setCameraOn(true);
+      loop();
+
+    } else {
+      // 🖥 Desktop → Front camera
+      const constraints = {
+        video: { facingMode: "user" }
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+      const webcam = new tmImage.Webcam(350, 350, true);
+      webcamRef.current = webcam;
+
+      await webcam.setup(constraints.video);
+      await webcam.play();
+
+      videoRef.current = webcam.webcam;
+      setCameraOn(true);
+      loop();
+    }
 
   } catch (err) {
-    console.warn("Primary camera load failed:", err);
-
-    // Fallback for mobile
-    if (isMobile) {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const cams = devices.filter((d) => d.kind === "videoinput");
-
-        // Pick rear camera (usually index 1)
-        const rearCam = cams[1];
-
-        if (!rearCam) {
-          alert("Rear camera not available.");
-          return;
-        }
-
-        const fallbackConstraints = {
-          video: { deviceId: { exact: rearCam.deviceId } }
-        };
-
-        const stream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
-
-        const webcam = new tmImage.Webcam(350, 350, false);
-        webcamRef.current = webcam;
-
-        await webcam.setup({ deviceId: rearCam.deviceId });
-        await webcam.play();
-
-        videoRef.current = webcam.webcam;
-        setCameraOn(true);
-        loop();
-      } catch (fallbackErr) {
-        console.error("Fallback failed:", fallbackErr);
-        alert("Unable to access rear camera.");
-      }
-    } else {
-      alert("Camera access failed on desktop.");
-    }
+    console.error("Camera error:", err);
+    alert("Camera access failed.");
   }
 };
 
