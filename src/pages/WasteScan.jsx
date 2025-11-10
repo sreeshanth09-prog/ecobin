@@ -5,17 +5,17 @@ import "./scan.css";
 
 export default function WasteScan() {
 
-  // AUTO-DETECT correct base path (localhost / deploy)
+  // AUTO-DETECT correct asset path
   const MODEL_URL = import.meta.env.BASE_URL + "tm-model/";
 
   const [model, setModel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [levels, setLevels] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
+  const [cameraMode, setCameraMode] = useState("auto");
 
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
   const webcamRef = useRef(null);
+  const canvasRef = useRef(null);
 
   // ---------------------------
   // LOAD MODEL
@@ -27,93 +27,61 @@ export default function WasteScan() {
           MODEL_URL + "model.json",
           MODEL_URL + "metadata.json"
         );
-
         setModel(loadedModel);
         setLoading(false);
       } catch (err) {
-        console.error("Model load failed:", err);
+        console.error("Model load failed", err);
         alert("Model load failed");
       }
     }
-
     loadModel();
   }, []);
 
+  // ---------------------------
+  // CAMERA CONSTRAINT SELECTOR
+  // ---------------------------
+  function getConstraints() {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (cameraMode === "auto") {
+      return {
+        facingMode: isMobile ? { ideal: "environment" } : "user",
+      };
+    }
+    if (cameraMode === "user") {
+      return { facingMode: "user" };
+    }
+    if (cameraMode === "environment") {
+      return { facingMode: { ideal: "environment" } };
+    }
+    return { facingMode: "user" };
+  }
 
   // ---------------------------
   // START CAMERA
   // ---------------------------
   const startCamera = async () => {
-  if (!model) return alert("Model not ready yet.");
+    if (!model) return alert("Model not ready yet.");
 
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  try {
-    if (isMobile) {
-      // 🔍 Step 1: Get list of cameras
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter((d) => d.kind === "videoinput");
-
-      console.log("Video devices:", videoDevices);
-
-      // 🔍 Step 2: find back camera
-      let backCam = videoDevices.find((d) =>
-        d.label.toLowerCase().includes("back")
-      );
-
-      // fallback: assume index 1 is rear camera
-      if (!backCam && videoDevices.length > 1) {
-        backCam = videoDevices[1];
-      }
-
-      // still no camera?
-      if (!backCam) {
-        alert("Rear camera not found. Using default camera.");
-      }
-
-      // 🔍 Step 3: Use the exact deviceId
-      const constraints = {
-        video: backCam
-          ? { deviceId: { exact: backCam.deviceId } }
-          : { facingMode: { ideal: "environment" } }
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    try {
+      const constraints = getConstraints();
 
       const webcam = new tmImage.Webcam(350, 350, false);
       webcamRef.current = webcam;
 
-      await webcam.setup(constraints.video);
+      // ⛔ WRONG: await webcam.setup({ video: constraints });
+      // ✔ RIGHT:
+      await webcam.setup({ facingMode: constraints.facingMode });
+
       await webcam.play();
-
-      videoRef.current = webcam.webcam;
       setCameraOn(true);
+
       loop();
-
-    } else {
-      // 🖥 Desktop → Front camera
-      const constraints = {
-        video: { facingMode: "user" }
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-      const webcam = new tmImage.Webcam(350, 350, true);
-      webcamRef.current = webcam;
-
-      await webcam.setup(constraints.video);
-      await webcam.play();
-
-      videoRef.current = webcam.webcam;
-      setCameraOn(true);
-      loop();
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("Camera access failed.");
     }
-
-  } catch (err) {
-    console.error("Camera error:", err);
-    alert("Camera access failed.");
-  }
-};
+  };
 
   // ---------------------------
   // STOP CAMERA
@@ -136,7 +104,6 @@ export default function WasteScan() {
 
     if (canvasRef.current) {
       webcamRef.current.canvas = canvasRef.current;
-
       const predictions = await model.predict(canvasRef.current);
 
       const levelsObject = {};
@@ -154,54 +121,62 @@ export default function WasteScan() {
     <div className="scan-page">
       <motion.div
         className="scan-card"
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <h2 className="scan-title">AI Waste Scanner ♻️</h2>
 
-        {loading ? (
-          <p className="loading-text">Loading AI model...</p>
-        ) : (
-          <>
-            <div className="camera-box">
-              {!cameraOn ? (
-                <button className="start-btn" onClick={startCamera}>
-                  Start Scan
-                </button>
-              ) : (
-                <>
-                  <canvas
-                    ref={canvasRef}
-                    className="scan-view"
-                    width="350"
-                    height="350"
-                  />
-                  <button className="stop-btn" onClick={stopCamera}>
-                    Stop
-                  </button>
-                </>
-              )}
-            </div>
+        {/* Camera Mode Selector */}
+        <div className="camera-select">
+          <label>Camera Mode</label>
+          <select
+            value={cameraMode}
+            onChange={(e) => setCameraMode(e.target.value)}
+          >
+            <option value="auto">Auto</option>
+            <option value="user">Front Camera</option>
+            <option value="environment">Rear Camera</option>
+          </select>
+        </div>
 
-            {levels && (
-              <div className="levels-box">
-                <h3>Waste Detection Levels</h3>
+        {/* CAMERA + START/STOP */}
+        <div className="camera-box">
+          {!cameraOn ? (
+            <button className="start-btn" onClick={startCamera}>
+              Start Scan
+            </button>
+          ) : (
+            <>
+              <canvas
+                ref={canvasRef}
+                className="scan-view"
+                width="350"
+                height="350"
+              />
+              <button className="stop-btn" onClick={stopCamera}>
+                Stop
+              </button>
+            </>
+          )}
+        </div>
 
-                {Object.entries(levels).map(([label, value]) => (
-                  <div className="level-row" key={label}>
-                    <span className="level-label">{label}</span>
-                    <div className="level-bar">
-                      <div
-                        className="level-fill"
-                        style={{ width: `${value}%` }}
-                      ></div>
-                    </div>
-                    <span className="level-num">{value}%</span>
-                  </div>
-                ))}
+        {/* AI LEVEL RESULTS */}
+        {levels && (
+          <div className="levels-box">
+            <h3>Waste Detection Levels</h3>
+            {Object.entries(levels).map(([label, value]) => (
+              <div className="level-row" key={label}>
+                <span className="level-label">{label}</span>
+                <div className="level-bar">
+                  <div
+                    className="level-fill"
+                    style={{ width: `${value}%` }}
+                  ></div>
+                </div>
+                <span className="level-num">{value}%</span>
               </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
       </motion.div>
     </div>
