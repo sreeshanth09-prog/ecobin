@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import "./scan.css";
 
 export default function WasteScan() {
-  const MODEL_URL = "/tm-model/"; // make sure you placed model.json + metadata.json + weights.bin
+
+  // AUTO-DETECT correct base path (localhost / deploy)
+  const MODEL_URL = import.meta.env.BASE_URL + "tm-model/";
 
   const [model, setModel] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,9 +27,11 @@ export default function WasteScan() {
           MODEL_URL + "model.json",
           MODEL_URL + "metadata.json"
         );
+
         setModel(loadedModel);
         setLoading(false);
       } catch (err) {
+        console.error("Model load failed:", err);
         alert("Model load failed");
       }
     }
@@ -74,9 +78,9 @@ export default function WasteScan() {
 
     if (canvasRef.current) {
       webcamRef.current.canvas = canvasRef.current;
+
       const predictions = await model.predict(canvasRef.current);
 
-      // convert Teachable Machine output → levels
       const levelsObject = {};
       predictions.forEach((p) => {
         levelsObject[p.className] = Math.round(p.probability * 100);
@@ -101,7 +105,6 @@ export default function WasteScan() {
           <p className="loading-text">Loading AI model...</p>
         ) : (
           <>
-            {/* CAMERA VIEW */}
             <div className="camera-box">
               {!cameraOn ? (
                 <button className="start-btn" onClick={startCamera}>
@@ -109,7 +112,12 @@ export default function WasteScan() {
                 </button>
               ) : (
                 <>
-                  <canvas ref={canvasRef} className="scan-view" width="350" height="350" />
+                  <canvas
+                    ref={canvasRef}
+                    className="scan-view"
+                    width="350"
+                    height="350"
+                  />
                   <button className="stop-btn" onClick={stopCamera}>
                     Stop
                   </button>
@@ -117,7 +125,6 @@ export default function WasteScan() {
               )}
             </div>
 
-            {/* LEVEL METER */}
             {levels && (
               <div className="levels-box">
                 <h3>Waste Detection Levels</h3>
@@ -126,7 +133,10 @@ export default function WasteScan() {
                   <div className="level-row" key={label}>
                     <span className="level-label">{label}</span>
                     <div className="level-bar">
-                      <div className="level-fill" style={{ width: `${value}%` }}></div>
+                      <div
+                        className="level-fill"
+                        style={{ width: `${value}%` }}
+                      ></div>
                     </div>
                     <span className="level-num">{value}%</span>
                   </div>
