@@ -11,7 +11,7 @@ import {
   FaUser
 } from "react-icons/fa";
 
-import "./navbar.css";
+import "./NavBar.css";
 
 export default function NavBar({ darkMode, setDarkMode }) {
   const location = useLocation();
